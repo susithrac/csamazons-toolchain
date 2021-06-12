@@ -45,7 +45,7 @@ passport.use(new WebAppStrategy({
   tenantId: "791292fb-11b7-4cef-a94c-fa9ead9f5f4e",
   secret: "MzVkYzQyYTktYTI0Zi00Njc5LTlkMGYtYzE3ODZmZGY5MWJi",
   oAuthServerUrl: "https://eu-gb.appid.cloud.ibm.com/oauth/v4/791292fb-11b7-4cef-a94c-fa9ead9f5f4e",
-  redirectUri: "http://localhost:6001/appid/callback"
+  redirectUri: "https://csamazons-toolchain.eu-gb.mybluemix.net/appid/callback"
 }));
 
 
