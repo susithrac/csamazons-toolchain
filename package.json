@@ -7,8 +7,11 @@
 		"test-unit": "mocha test/unit-test.js --reporter json --reporter-options output=test/unit-test.json | tee test/unit-test.json"
 	},
 	"dependencies": {
-		"express": "4.17.x",
-		"cfenv": "1.2.x"
+		"cfenv": "1.2.x",
+		"express": "^4.17.1",
+		"express-session": "^1.17.2",
+		"ibmcloud-appid": "^6.1.1",
+		"passport": "^0.4.1"
 	},
 	"repository": {},
 	"engines": {
