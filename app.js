@@ -21,7 +21,7 @@ const message = require('./utils');
 // for more info, see: https://www.npmjs.com/package/cfenv
 var cfenv = require('cfenv');
 
-
+/*
 
 
 // Warning The default server-side session storage implementation, MemoryStore, 
@@ -52,7 +52,7 @@ passport.use(new WebAppStrategy({
 app.get('/appid/callback',passport.authenticate(WebAppStrategy.STRATEGY_NAME));
 
 app.use(passport.authenticate(WebAppStrategy.STRATEGY_NAME));
-
+*/
 // serve the files out of ./public as our main files
 app.use(express.static(__dirname + '/public'));
 // get the app environment from Cloud Foundry
