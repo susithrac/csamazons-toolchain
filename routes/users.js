@@ -39,8 +39,34 @@ async function getCloudant() {
         router.get('/:id', function (req, res, next) {
             console.log(req.params.id);
             db.find({ selector: { _id: "csamazon:" + req.params.id } }, function (err, data) {
-                console.log(data);
-                res.send(data);
+                if (!err) {
+                    console.log(data);
+                    res.send(data);
+                } else {
+                    res.status(400).send("Unable to find the data");
+                }
+
+            });
+        });
+
+        router.put('/:id', function (req, res, next) {
+            db.find({ selector: { _id: "csamazon:" + req.params.id } }, function (err, data) {
+                req.body["_id"] = data.docs[0]["_id"];
+                req.body["_rev"] = data.docs[0]["_rev"];
+                if (data.docs[0]["_id"]) {
+                    db.insert(req.body, function (err, data1) {
+                        if (!err) {
+                            console.log('success', 'The record was updated successfully');
+                            res.send(data1);
+                        }
+                        else {
+                            console.log('failure', err);
+                            res.status(400).send("Unable to insert the data");
+                        }
+                    });
+                }else{
+                    res.status(400).send("Unable to find the data");
+                }
             });
         });
     } catch (err) {
