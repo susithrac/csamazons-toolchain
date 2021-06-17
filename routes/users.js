@@ -114,30 +114,22 @@ async function getCloudant() {
         });
 
         function constructMainChartData(data) {
-            var mainChartArray = [];
-            console.log("Inside my function");
+            var mainChartArray = [{ name: "housing", data: [] },
+            { name: "travel", data: [] },
+            { name: "food", data: [] }];
             data.forEach((cfData => {
-                var keys = Object.keys(cfData);
-                console.log("keys" + keys);
-                keys.forEach((key) => {
-                    var tObj = {};
-                    tObj["name"] = key;
-                    tObj["data"] = Object.values(cfData[key]);
-                    mainChartArray.push(tObj);
-                });
+                mainChartArray[0]["data"].push(cfData["housing"]["CF"]);
+                mainChartArray[1]["data"].push(cfData["travel"]["CF"]);
+                mainChartArray[2]["data"].push(cfData["food"]["CF"]);
             }));
-            console.log(mainChartArray);
+            return mainChartArray;
         }
 
         router.get('/:id/:mainchart', function (req, res, next) {
-            console.log("Sush");
             db.find({ selector: { _id: "csamazon:" + req.params.id } }, function (err, data) {
                 if (!err) {
-                    // console.log(data);
                     console.log(data["docs"][0][req.params.id]);
-                    constructMainChartData(data["docs"][0][req.params.id]);
-                    //console.log(data[req.params.id]);
-                    res.status(200).send(data);
+                    res.status(200).send(constructMainChartData(data["docs"][0][req.params.id]));
                 } else {
                     res.status(400).send("Unable to find the data");
                 }
