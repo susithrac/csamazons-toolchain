@@ -102,6 +102,20 @@ async function getCloudant() {
             });
         });
 
+        router.get('/:id/:mainchart', function (req, res, next) {
+            console.log(req.params.id);
+            db.find({ selector: { _id: "csamazon:" + req.params.id } }, function (err, data) {
+                if (!err) {
+                    console.log(data);
+                    console.log(data[req.params.id]);
+                    res.status(200).send(data);
+                } else {
+                    res.status(400).send("Unable to find the data");
+                }
+
+            });
+        });
+
         router.put('/:id', function (req, res, next) {
             db.find({ selector: { _id: "csamazon:" + req.params.id } }, function (err, data) {
                 if (data && data.docs && data.docs.length > 0) {
