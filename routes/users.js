@@ -137,6 +137,160 @@ async function getCloudant() {
             });
         });
 
+        router.get('/piechart/:id/:key', function (req, res, next) {
+            db.find({ selector: { _id: "csamazon:" + req.params.id } }, function (err, data) {
+                if (!err) {
+                    var usrArray = data["docs"][0][req.params.id];
+                    var piechartArray = [
+                        {
+                            "name": "electricity",
+                            "y": []
+
+                        }];
+                    var electricityData = 0;
+                    var fuelOilData = 0;
+                    var lpgData = 0;
+                    var wasteData = 0;
+                    var waterData = 0;
+                    var vehicleData = 0;
+                    var busData = 0;
+                    var taxiData = 0;
+                    var railData = 0;
+                    var flyingData = 0;
+                    var whiteMeatData = 0;
+                    var dairyData = 0;
+                    var vegetablesData = 0;
+                    var fruitData = 0;
+                    var grainsData = 0;
+                    usrArray.forEach(data => {
+                        if (req.params.key == "housing") {
+                            electricityData += data["housing"]["electricity"] * 0.85;
+                            fuelOilData += data["housing"]["fuelOil"] * 2.475;
+                            lpgData += data["housing"]["lPG"] * 2.983;
+                            wasteData += data["housing"]["waste"] * 0.991;
+                            waterData += data["housing"]["water"] * 0.991;
+                        }
+                        if (req.params.key == "travel") {
+                            vehicleData += data["travel"]["vehicle"] * (2.475 / 16);
+                            busData += data["travel"]["bus"] * (2.653 / 17);
+                            taxiData += data["travel"]["taxi"] * (2.475 / 16);
+                            railData += data["travel"]["rail"] * 0.007837;
+                            flyingData += data["travel"]["flying"] * 0.115;
+                        }
+                        if (req.params.key == "food") {
+                            whiteMeatData += data["food"]["whiteMeat"] * 0.00217;
+                            dairyData += data["food"]["dairy"] * 0.00298;
+                            vegetablesData += data["food"]["vegetables"] * 0.00259;
+                            fruitData += data["food"]["fruit"] * 0.000874;
+                            grainsData += data["food"]["grains"] * 0.000235;
+                        }
+                    });
+                    electricityData /= usrArray.length;
+                    fuelOilData /= usrArray.length;
+                    lpgData /= usrArray.length;
+                    wasteData /= usrArray.length;
+                    waterData /= usrArray.length;
+                    vehicleData /= usrArray.length;
+                    busData /= usrArray.length;
+                    taxiData /= usrArray.length;
+                    railData /= usrArray.length;
+                    flyingData /= usrArray.length;
+                    whiteMeatData /= usrArray.length;
+                    dairyData /= usrArray.length;
+                    vegetablesData /= usrArray.length;
+                    fruitData /= usrArray.length;
+                    grainsData /= usrArray.length;
+
+                    if (req.params.key == "housing") {
+                        piechartArray = [
+                            {
+                                "name": "Electricity",
+                                "y": electricityData,
+                                sliced: true,
+                                selected: true
+                            },
+                            {
+                                "name": "Fuel Oil",
+                                "y": fuelOilData
+                            },
+                            {
+                                "name": "Natural Gas",
+                                "y": lpgData
+                            },
+                            {
+                                "name": "Waste",
+                                "y": wasteData
+                            },
+                            {
+                                "name": "Water",
+                                "y": waterData
+                            }
+                        ];
+                    }
+
+                    if (req.params.key == "travel") {
+                        piechartArray = [
+                            {
+                                "name": "Vehicle",
+                                "y": vehicleData,
+                                sliced: true,
+                                selected: true
+                            },
+                            {
+                                "name": "Bus",
+                                "y": busData
+                            },
+                            {
+                                "name": "Taxi",
+                                "y": taxiData
+                            },
+                            {
+                                "name": "Rail",
+                                "y": railData
+                            },
+                            {
+                                "name": "Flying",
+                                "y": flyingData
+                            }
+                        ];
+                    }
+
+                    if (req.params.key == "food") {
+                        piechartArray = [
+                            {
+                                "name": "White Meat",
+                                "y": whiteMeatData,
+                                sliced: true,
+                                selected: true
+                            },
+                            {
+                                "name": "Dairy",
+                                "y": dairyData
+                            },
+                            {
+                                "name": "Vegetables",
+                                "y": vegetablesData
+                            },
+                            {
+                                "name": "Fruit",
+                                "y": fruitData
+                            },
+                            {
+                                "name": "Grains",
+                                "y": grainsData
+                            }
+                        ];
+                    }
+                    res.status(200).send(piechartArray);
+                } else {
+                    res.status(400).send("Unable to find the data");
+                }
+
+            });
+        });
+
+
+
         router.put('/:id', function (req, res, next) {
             db.find({ selector: { _id: "csamazon:" + req.params.id } }, function (err, data) {
                 if (data && data.docs && data.docs.length > 0) {
