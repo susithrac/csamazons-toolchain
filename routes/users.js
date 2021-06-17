@@ -26,27 +26,20 @@ async function getCloudant() {
 
         router.post('/user', function (req, res, next) {
             var copy = Object.assign({}, req.body);
-            //calculateCFData(copy);
+            calculateCFData(copy);
             var document = req.body;
             var id = (document._id).split(":");
-            console.log(id);
-            var documentId = document._id;
-            var documentId = document.name;
             delete document._id;
             delete document.name;
             var dataTobeAdded = document;
             console.log("here" + id[1]);
             db.find({ selector: { _id: "csamazon:" + id[1] } }, function (err, data) {
                 if (data && data.docs && data.docs.length > 0) {
-                    // req.body["_id"] = data.docs[0]["_id"];
                     var newObject = {};
                     newObject["_id"] = data.docs[0]["_id"];
                     newObject["_rev"] = data.docs[0]["_rev"];
-                    let tempArray = data.docs[0][id[1]];
-
+                    let tempArray = data.docs;
                     tempArray.push(dataTobeAdded);
-                    console.log("New Temp Array");
-                    //console.log(tempArray);
                     newObject[id[1]] = tempArray;
                     console.log(newObject);
                     if (data.docs[0]["_id"]) {
@@ -75,19 +68,37 @@ async function getCloudant() {
                 }
             });
         });
-        function calculateCFData(data) {
-            let housing = data["housing"];
-            housing["electricity"] *= 0.85;
-            housing["fuelOil"] *= 2.5;
-            //Remove natural gas
-            housing["lPG"] *= 2.983;
-            data["housing"]["CF"]=housing["electricity"]+housing["fuelOil"]+housing["lPG"]; 
 
-            let travel = data["travel"];
-            let food = data["food"];
-            let product = data["product"];
-            let services = data["services"];
+        function calculateCFData(data) {
+            data["housing"]["CF"] = (
+                (data["housing"]["electricity"] * 0.85) +
+                (data["housing"]["fuelOil"] * 2.475) +
+                (data["housing"]["lPG"] * 2.983) +
+                (data["housing"]["waste"] * 0.991) +
+                (data["housing"]["water"] * 0.00128)
+            );
+            data["travel"]["CF"] = (
+                (data["travel"]["vehicle"] * (2.475 / 16)) +
+                (data["travel"]["bus"] * (2.653 / 17)) +
+                (data["travel"]["taxi"] * (2.475 / 16)) +
+                (data["travel"]["rail"] * 0.007837) +
+                (data["travel"]["flying"] * 0.115)
+            );
+            data["food"]["CF"] = (
+                (data["food"]["whiteMeat"] * 0.00217) +
+                (data["food"]["dairy"] * 0.00298) +
+                (data["food"]["vegetables"] * 0.00259) +
+                (data["food"]["fruit"] * 0.000874) +
+                (data["food"]["grains"] * 0.000235)
+            );
+            data["CF"] = (
+                data["housing"]["CF"] +
+                data["travel"]["CF"] +
+                data["food"]["CF"]
+            );
+            return data;
         }
+
 
         router.get('/:id', function (req, res, next) {
             console.log(req.params.id);
@@ -102,12 +113,30 @@ async function getCloudant() {
             });
         });
 
+        function constructMainChartData(data) {
+            var mainChartArray = [];
+            console.log("Inside my function");
+            data.forEach((cfData => {
+                var keys = Object.keys(cfData);
+                console.log("keys" + keys);
+                keys.forEach((key) => {
+                    var tObj = {};
+                    tObj["name"] = key;
+                    tObj["data"] = Object.values(cfData[key]);
+                    mainChartArray.push(tObj);
+                });
+            }));
+            console.log(mainChartArray);
+        }
+
         router.get('/:id/:mainchart', function (req, res, next) {
-            console.log(req.params.id);
+            console.log("Sush");
             db.find({ selector: { _id: "csamazon:" + req.params.id } }, function (err, data) {
                 if (!err) {
-                    console.log(data);
-                    console.log(data[req.params.id]);
+                    // console.log(data);
+                    console.log(data["docs"][0][req.params.id]);
+                    constructMainChartData(data["docs"][0][req.params.id]);
+                    //console.log(data[req.params.id]);
                     res.status(200).send(data);
                 } else {
                     res.status(400).send("Unable to find the data");
