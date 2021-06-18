@@ -499,7 +499,7 @@
     /***/
     function _(module, exports, __webpack_require__) {
       __webpack_require__(
-      /*! G:\new_repo\ibmwitcsamazons\CarbonFootPrint\node_modules\@angular-devkit\build-angular\src\webpack\es5-polyfills.js */
+      /*! /Users/susithra/hackathon/ibmwitcsamazons/CarbonFootPrint/node_modules/@angular-devkit/build-angular/src/webpack/es5-polyfills.js */
       "voQr");
 
       __webpack_require__(
@@ -507,7 +507,7 @@
       "R0gw");
 
       module.exports = __webpack_require__(
-      /*! G:\new_repo\ibmwitcsamazons\CarbonFootPrint\src\polyfills.ts */
+      /*! /Users/susithra/hackathon/ibmwitcsamazons/CarbonFootPrint/src/polyfills.ts */
       "hN/g");
       /***/
     },
