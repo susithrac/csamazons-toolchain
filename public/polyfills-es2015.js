@@ -7,7 +7,7 @@
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/susithra/hackathon/ibmwitcsamazons/CarbonFootPrint/src/polyfills.ts */"hN/g");
+module.exports = __webpack_require__(/*! G:\new_repo\ibmwitcsamazons\CarbonFootPrint\src\polyfills.ts */"hN/g");
 
 
 /***/ }),
