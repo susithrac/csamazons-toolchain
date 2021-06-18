@@ -38,9 +38,10 @@ async function getCloudant() {
                     var newObject = {};
                     newObject["_id"] = data.docs[0]["_id"];
                     newObject["_rev"] = data.docs[0]["_rev"];
+                    newObject[id[1]] = data.docs[0][id[1]];
                     let tempArray = data.docs;
-                    tempArray.push(dataTobeAdded);
-                    newObject[id[1]] = tempArray;
+                    calculateCFData(dataTobeAdded);
+                    newObject[id[1]].push(dataTobeAdded);
                     console.log(newObject);
                     if (data.docs[0]["_id"]) {
                         db.insert(newObject, function (err, data1) {
@@ -56,15 +57,26 @@ async function getCloudant() {
                     } else {
                         res.status(400).send("Unable to insert the data");
                     }
-                } else {
+                }else{
                     console.log("Unable to find the data1");
                     console.log(copy);
-                    let data = db.insert(copy);
+                    var tempObj = {};
+                    tempObj["_id"] = copy._id;
+                    tempObj["name"] = copy.name;
+                    delete copy._id;
+                    delete copy.name;
+                    tempObj[id[1]] = [];
+                    tempObj[id[1]].push(copy);
+                    console.log("Tem");
+                    console.log(tempObj);
+                    let data = db.insert(tempObj);
                     if (data) {
                         res.status(200).send({ data: data });
-                    } else {
-                        res.status(400).send("Error during saving the new data");
-                    }
+                    } 
+                }
+                if (err) {
+                    res.status(400).send("Error during saving the new data");
+                    
                 }
             });
         });
