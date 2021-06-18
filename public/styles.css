@@ -29,6 +29,10 @@ body {
   font-size: 1.5vw;
   text-align: center;
   margin: 10% auto 0;
+  border: 1px solid white;
+  background: black;
+  width: 32%;
+  opacity: 0.5;
 }
 .logo-icon {
   width: 70px;
@@ -44,7 +48,7 @@ body {
   cursor: pointer;
   width: 158px;
   height: 40px;
-  margin: 20px auto 0;
+  margin: 20px auto 28px 0;
 }
 #error {
   padding-top: 20px;
